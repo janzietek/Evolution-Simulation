@@ -12,11 +12,36 @@ public class SimulationEngine implements Runnable{
     public volatile boolean isRunning = true;
     public final LinkedList<IMapChangeObserver> observers = new LinkedList<>();
 
-    public SimulationEngine(SimulationSettings settings) {
+    public SimulationEngine(SimulationSettings settings, boolean isBounded) {
         this.settings = settings;
-        this.map = new SimulationMapBounded(settings.mapWidth, settings.mapHeight, settings.jungleRatio);
+        if (isBounded)
+            this.map = new SimulationMapBounded(settings.mapWidth, settings.mapHeight, settings.jungleRatio);
+        else
+            this.map = new SimulationMapWrapped(settings.mapWidth, settings.mapHeight, settings.jungleRatio);
+
         placeAdamsAndEves();
     }
+
+
+    @Override
+    public void run() {
+        while (!simulationEnd()) {
+            if (isRunning()) {
+
+                try {
+                    Thread.sleep(1000);
+                    this.singleEra();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                for (IMapChangeObserver observer: observers)
+                {
+                    observer.mapChange();
+                }
+            }
+        }
+    }
+
 
     public void addObserver (IMapChangeObserver observer) {
         this.observers.add(observer);
@@ -43,24 +68,6 @@ public class SimulationEngine implements Runnable{
         this.simulationEra = simulationEra + 1;
     }
 
-    @Override
-    public void run() {
-        while (!simulationEnd()) {
-            if (isRunning()) {
-
-                try {
-                    Thread.sleep(1000);
-                    this.singleEra();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                for (IMapChangeObserver observer: observers)
-                {
-                    observer.mapChange();
-                }
-            }
-        }
-    }
 
     public boolean simulationEnd () {
         if (animals.size() == 0 && simulationEra > 0) {

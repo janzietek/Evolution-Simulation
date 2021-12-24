@@ -17,10 +17,16 @@ public class SimulationWindow extends BorderPane {
     Thread simulation2;
 
 
-    public SimulationWindow (SimulationSettings settings) {
+    public SimulationWindow (SimulationSettings settings, boolean magic1, boolean magic2) {
         try {
-            this.engine1 = new SimulationEngine(settings);
-            this.engine2 = new SimulationEngine(settings);
+            if (magic1)
+                this.engine1 = new MagicSimulationEngine(settings, false);
+            else
+                this.engine1 = new SimulationEngine(settings, false);
+            if (magic2)
+                this.engine2 = new MagicSimulationEngine(settings, true);
+            else
+                this.engine2 = new SimulationEngine(settings, true);
 
             this.map1 = new MapVisualizer(engine1);
             this.map2 = new MapVisualizer(engine2);

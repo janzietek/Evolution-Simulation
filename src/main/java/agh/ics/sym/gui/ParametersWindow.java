@@ -5,6 +5,7 @@ import agh.ics.sym.gui.SimulationApp;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -19,46 +20,51 @@ public class ParametersWindow extends GridPane {
 
 
         Label widthLabel = new Label("Width: ");
-        TextField mapWidth = new TextField("10");
+        TextField mapWidth = new TextField("15");
         setConstraints(widthLabel, 0, 0);
         setConstraints(mapWidth, 1, 0);
 
         Label heightLabel = new Label("Height: ");
-        TextField mapHeight = new TextField("10");
+        TextField mapHeight = new TextField("15");
         setConstraints(heightLabel, 0, 1);
         setConstraints(mapHeight, 1, 1);
 
         Label ratioLabel = new Label("Jungle ratio: ");
-        TextField mapJungleRatio = new TextField("0.16");
+        TextField mapJungleRatio = new TextField("0.17");
         setConstraints(ratioLabel, 0, 2);
         setConstraints(mapJungleRatio, 1, 2);
 
         Label startEnergyLabel = new Label("Start energy: ");
-        TextField animalStartEnergy = new TextField("30");
+        TextField animalStartEnergy = new TextField("100");
         setConstraints(startEnergyLabel, 0, 3);
         setConstraints(animalStartEnergy, 1, 3);
 
         Label moveEnergyLabel = new Label("Move energy: ");
-        TextField animalMoveEnergy = new TextField("2");
+        TextField animalMoveEnergy = new TextField("3");
         setConstraints(moveEnergyLabel, 0, 4);
         setConstraints(animalMoveEnergy, 1, 4);
 
         Label plantEnergyLabel = new Label("Plant energy: ");
-        TextField plantEnergy = new TextField("20");
+        TextField plantEnergy = new TextField("100");
         setConstraints(plantEnergyLabel, 0, 5);
         setConstraints(plantEnergy, 1, 5);
 
         Label adamsAndEvesLabel = new Label("Adams and Eves number: ");
-        TextField adamsAndEves = new TextField("10");
+        TextField adamsAndEves = new TextField("30");
         setConstraints(adamsAndEvesLabel, 0, 6);
         setConstraints(adamsAndEves, 1, 6);
 
         Button startButton = new Button("Start simulation");
-        setConstraints(startButton, 0, 7);
+        setConstraints(startButton, 0, 8);
+
+        CheckBox magic1 = new CheckBox("Make left map magic");
+        CheckBox magic2 = new CheckBox("Make right map magic");
+        setConstraints(magic1, 0, 7);
+        setConstraints(magic2, 1, 7);
 
         startButton.setOnAction(e -> {
             setSettings(mapWidth, mapHeight, mapJungleRatio, animalStartEnergy, animalMoveEnergy, plantEnergy, adamsAndEves);
-            Scene scene = new Scene(new SimulationWindow(this.settings));
+            Scene scene = new Scene(new SimulationWindow(this.settings, magic1.isSelected(), magic2.isSelected()));
             SimulationApp.setScene(scene);
         });
 
@@ -77,6 +83,8 @@ public class ParametersWindow extends GridPane {
                 plantEnergy,
                 adamsAndEvesLabel,
                 adamsAndEves,
+                magic1,
+                magic2,
                 startButton
         );
     }
@@ -103,5 +111,6 @@ public class ParametersWindow extends GridPane {
             System.out.println(ex);
         }
     }
+
 }
 

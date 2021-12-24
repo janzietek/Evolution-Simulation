@@ -6,8 +6,8 @@ import java.util.Random;
 public class MagicSimulationEngine extends SimulationEngine{
     public int magicUses = 0;
 
-    public MagicSimulationEngine(SimulationSettings settings, IMapChangeObserver observer) {
-        super(settings);
+    public MagicSimulationEngine(SimulationSettings settings, boolean isBounded) {
+        super(settings, isBounded);
     }
 
     @Override
