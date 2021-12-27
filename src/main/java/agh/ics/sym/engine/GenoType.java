@@ -48,8 +48,19 @@ public class GenoType {
 
     @Override
     public String toString() {
-        return "GenoType{" +
-                "genoType=" + Arrays.toString(genoType) +
-                '}';
+        return Arrays.toString(genoType);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GenoType genoType1 = (GenoType) o;
+        return Arrays.equals(genoType, genoType1.genoType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(genoType);
     }
 }

@@ -30,6 +30,8 @@ public class MagicSimulationEngine extends SimulationEngine{
                 magicCopies.add(magicAnimal);
                 positions.remove(position);
                 this.map.placeAnimal(magicAnimal);
+                addAnimalsGenes(magicAnimal);
+                this.stats.updateCausedByMagic(magicAnimal.startEnergy);
             }
         }
         this.animals.addAll(magicCopies);

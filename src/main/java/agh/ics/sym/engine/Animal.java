@@ -1,15 +1,18 @@
 package agh.ics.sym.engine;
 
 import java.lang.Math;
+import java.util.LinkedList;
 
 public class Animal implements IMapElement, Comparable<Animal>{
     private final GenoType genoType;
-    private final int startEnergy;
+    public final int startEnergy;
 
     private MapDirection orientation;
     public int energy;
+    public int age = 0;
     private Vector2d position;
     private final SimulationMap map;
+    public LinkedList<Animal> children = new LinkedList<>();
 
     // constructor for magically created animals
     public Animal (SimulationMap map, Vector2d initialPosition, int startEnergy) {
@@ -40,6 +43,10 @@ public class Animal implements IMapElement, Comparable<Animal>{
         this.energy = original.startEnergy;
         this.map = original.map;
         this.genoType = original.genoType;
+    }
+
+    public void addChild(Animal child) {
+        this.children.add(child);
     }
 
     public MapDirection getOrientation () {
@@ -118,6 +125,10 @@ public class Animal implements IMapElement, Comparable<Animal>{
                 gene = (byte) (gene - 1);
             }
         }
+    }
+
+    public void getOlder () {
+        this.age = this.age + 1;
     }
 
     public boolean isAt (Vector2d position) {

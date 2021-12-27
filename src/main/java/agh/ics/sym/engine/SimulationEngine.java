@@ -1,16 +1,26 @@
 package agh.ics.sym.engine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 
 public class SimulationEngine implements Runnable{
-    private final SimulationSettings settings;
+    public final SimulationSettings settings;
+    public SimulationStats stats;
     public final SimulationMap map;
-    int simulationEra = 0;
+    public volatile boolean isRunning = false;
+    public int refreshTime;
+    public int simulationEra = 0;
+    public GenoType dominantGenotype;
+
+
     public final LinkedList<Animal> animals = new LinkedList<>();
+    public final LinkedList<Animal> lateAnimals = new LinkedList<>();
     public final LinkedList<Plant> plants = new LinkedList<>();
-    public volatile boolean isRunning = true;
+
     public final LinkedList<IMapChangeObserver> observers = new LinkedList<>();
+    public final Map<GenoType,ArrayList<Animal>> genotypes = new HashMap<>();
 
     public SimulationEngine(SimulationSettings settings, boolean isBounded) {
         this.settings = settings;
@@ -19,7 +29,10 @@ public class SimulationEngine implements Runnable{
         else
             this.map = new SimulationMapWrapped(settings.mapWidth, settings.mapHeight, settings.jungleRatio);
 
+        this.stats = new SimulationStats(settings);
+        this.refreshTime = 200;
         placeAdamsAndEves();
+        updateDominantGenotype();
     }
 
 
@@ -27,9 +40,8 @@ public class SimulationEngine implements Runnable{
     public void run() {
         while (!simulationEnd()) {
             if (isRunning()) {
-
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(refreshTime);
                     this.singleEra();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -60,11 +72,13 @@ public class SimulationEngine implements Runnable{
     }
 
     public void singleEra() {
+        stats.updatePlants(plants.size());
         removeDeadAnimals();
         moveAnimals();
         eat();
         copulate();
         growPlants();
+        updateDominantGenotype();
         this.simulationEra = simulationEra + 1;
     }
 
@@ -86,6 +100,7 @@ public class SimulationEngine implements Runnable{
                 animal = new Animal(this.map, position, this.settings.animalsStartEnergy);
                 animals.add(animal);
                 this.map.placeAnimal(animal);
+                addAnimalsGenes(animal);
                 i--;
             }
         }
@@ -94,15 +109,19 @@ public class SimulationEngine implements Runnable{
 
     private void removeDeadAnimals() {
         LinkedList<Animal> deadAnimals = new LinkedList<>();
-
         for (Animal animal : this.animals) {
             if (animal.isDead()) {
                 deadAnimals.add(animal);
+                stats.updateCausedByDeath(animal);
             }
+            else
+                animal.getOlder();
         }
 
         for (Animal animal: deadAnimals) {
             this.map.removeAnimal(animal);
+            removeAnimalsGenes(animal);
+            lateAnimals.add(animal);
             animals.remove(animal);
         }
     }
@@ -112,6 +131,7 @@ public class SimulationEngine implements Runnable{
             animal.move();
             animal.modifyEnergy((-1) * settings.moveEnergy);
         }
+        stats.updateEnergyCausedByMoving();
     }
 
     private void eat() {
@@ -130,6 +150,7 @@ public class SimulationEngine implements Runnable{
         for (Plant plant: plantsToRemove){
             this.map.removePlant(plant);
             this.plants.remove(plant);
+            stats.updateEnergyCausedByEating();
         }
     }
 
@@ -140,8 +161,12 @@ public class SimulationEngine implements Runnable{
 
                 if (mates.get(0).canCopulate() && mates.get(1).canCopulate()) {
                     Animal child = new Animal(mates.get(0), mates.get(1));
+                    mates.get(0).addChild(child);
+                    mates.get(1).addChild(child);
                     this.map.placeAnimal(child);
                     this.animals.add(child);
+                    addAnimalsGenes(child);
+                    stats.updateCausedByBirth();
                 }
             }
         }
@@ -164,5 +189,27 @@ public class SimulationEngine implements Runnable{
         }
     }
 
-}
+    protected void addAnimalsGenes (Animal animal) {
+        if (genotypes.get(animal.getGenoType()) == null) {
+            ArrayList<Animal> animalsGenes = new ArrayList<>();
+            genotypes.put(animal.getGenoType(), animalsGenes);
+        }
+        genotypes.get(animal.getGenoType()).add(animal);
+    }
 
+    protected void removeAnimalsGenes (Animal animal) {
+        genotypes.get(animal.getGenoType()).remove(animal);
+    }
+
+    protected void updateDominantGenotype () {
+        GenoType dominant = this.dominantGenotype;
+        int maxNumberOfClones = 0;
+        for (ArrayList<Animal> animals: genotypes.values()) {
+            if (animals.size() > maxNumberOfClones) {
+                maxNumberOfClones = animals.size();
+                dominant = animals.get(0).getGenoType();
+            }
+        }
+        this.dominantGenotype = dominant;
+    }
+}
