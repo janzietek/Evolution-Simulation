@@ -6,7 +6,7 @@ public class SimulationStats {
     public int animalsNumber;
     public int deadAnimalsNumber;
     public int totalEnergy;
-    public int totalDeadAge;
+    public long totalDeadAge;
     public int totalChildren;
 
     SimulationSettings settings;

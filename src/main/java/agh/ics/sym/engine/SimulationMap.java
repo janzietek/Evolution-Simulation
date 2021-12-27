@@ -93,7 +93,7 @@ public abstract class SimulationMap implements IPositionChangeObserver{
         this.unitFields.get(newPosition).animals.add(animal);
     }
 
-    private boolean isInJungle (Vector2d position) {
+    public boolean isInJungle (Vector2d position) {
         return position.isInRectangle(this.jungleLowerLeft, this.jungleUpperRight);
     }
 
