@@ -16,7 +16,6 @@ public class SimulationEngine implements Runnable{
 
 
     public final LinkedList<Animal> animals = new LinkedList<>();
-    public final LinkedList<Animal> lateAnimals = new LinkedList<>();
     public final LinkedList<Plant> plants = new LinkedList<>();
 
     public final LinkedList<IMapChangeObserver> observers = new LinkedList<>();
@@ -121,7 +120,6 @@ public class SimulationEngine implements Runnable{
         for (Animal animal: deadAnimals) {
             this.map.removeAnimal(animal);
             removeAnimalsGenes(animal);
-            lateAnimals.add(animal);
             animals.remove(animal);
         }
     }

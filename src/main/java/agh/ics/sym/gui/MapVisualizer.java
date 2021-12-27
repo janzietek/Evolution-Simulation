@@ -1,5 +1,6 @@
 package agh.ics.sym.gui;
 
+
 import agh.ics.sym.engine.*;
 import com.sun.javafx.geom.Rectangle;
 import javafx.application.Platform;
@@ -95,16 +96,13 @@ public class MapVisualizer extends GridPane implements IMapChangeObserver {
                         this.add(image, i, UR.y - j);
                         GridPane.setHalignment(image, HPos.CENTER);
                     }
-                    /*
-                    try {
-                        label = new Label(map.objectAt(currentPosition).toString());
-                        this.add(label, i, UR.y - j);
-                        GridPane.setHalignment(label, HPos.CENTER);
+
+                    image = imagesManager.GetBarImageView(map.objectAt(currentPosition), gridSize, engine.settings.moveEnergy);
+                    if(image != null)
+                    {
+                        this.add(image, i, UR.y - j);
+                        GridPane.setHalignment(image, HPos.CENTER);
                     }
-                    catch (NullPointerException ex) {
-                        ex.printStackTrace();
-                    }
-                    */
                 }
                 else {
                     if(map.isPlantAt(currentPosition)) {

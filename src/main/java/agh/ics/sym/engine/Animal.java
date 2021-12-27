@@ -12,6 +12,7 @@ public class Animal implements IMapElement, Comparable<Animal>{
     public int age = 0;
     private Vector2d position;
     private final SimulationMap map;
+    public Animal parent;
     public LinkedList<Animal> children = new LinkedList<>();
 
     // constructor for magically created animals

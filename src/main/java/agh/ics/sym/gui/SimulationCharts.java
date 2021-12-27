@@ -41,16 +41,21 @@ public class SimulationCharts extends VBox implements IMapChangeObserver {
         plantsSeries.getData().add(new XYChart.Data<>(0, 0));
         NumberAxis xAxis = new NumberAxis();
         xAxis.setLabel("Simulation era");
-        NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel("Number of plants");
-        xAxis.setAnimated(true);
+        xAxis.setAnimated(false);
         xAxis.setAutoRanging(true);
         xAxis.setForceZeroInRange(false);
+        xAxis.setManaged(true);
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Number of plants");
+        yAxis.setAnimated(false);
+
         LineChart<Number, Number> plantsChart = new LineChart<>(xAxis, yAxis);
         plantsChart.setMaxHeight(chartHeight);
         plantsChart.setMaxHeight(chartWidth);
         plantsChart.getData().add(plantsSeries);
-        plantsChart.setAnimated(true);
+        plantsChart.setCreateSymbols(false);
+        plantsChart.setAnimated(false);
         plantsChart.setTitle("Plants");
         this.getChildren().add(plantsChart);
     }
@@ -63,7 +68,7 @@ public class SimulationCharts extends VBox implements IMapChangeObserver {
         xAxis.setLabel("Simulation era");
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Lifespan");
-        xAxis.setAnimated(true);
+        xAxis.setAnimated(false);
         xAxis.setAutoRanging(true);
         xAxis.setForceZeroInRange(false);
         LineChart<Number, Number> lifespanChart = new LineChart<>(xAxis, yAxis);
@@ -71,7 +76,8 @@ public class SimulationCharts extends VBox implements IMapChangeObserver {
         lifespanChart.setMaxHeight(chartHeight);
         lifespanChart.setMaxHeight(chartWidth);
         lifespanChart.getData().add(lifespanSeries);
-        lifespanChart.setAnimated(true);
+        lifespanChart.setAnimated(false);
+        lifespanChart.setCreateSymbols(false);
         lifespanChart.setTitle("Average lifespan");
         this.getChildren().add(lifespanChart);
     }
@@ -85,14 +91,15 @@ public class SimulationCharts extends VBox implements IMapChangeObserver {
         xAxis.setLabel("Simulation era");
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Number of animals");
-        xAxis.setAnimated(true);
+        xAxis.setAnimated(false);
         xAxis.setAutoRanging(true);
         xAxis.setForceZeroInRange(false);
         LineChart<Number, Number> animalsChart = new LineChart<>(xAxis, yAxis);
         animalsChart.setMaxHeight(chartHeight);
         animalsChart.setMaxHeight(chartWidth);
         animalsChart.getData().add(animalsSeries);
-        animalsChart.setAnimated(true);
+        animalsChart.setCreateSymbols(false);
+        animalsChart.setAnimated(false);
         animalsChart.setTitle("Alive animals");
         this.getChildren().add(animalsChart);
     }
@@ -105,14 +112,15 @@ public class SimulationCharts extends VBox implements IMapChangeObserver {
         xAxis.setLabel("Simulation era");
         NumberAxis yAxis = new NumberAxis();
         yAxis.setLabel("Energy");
-        xAxis.setAnimated(true);
+        xAxis.setAnimated(false);
         xAxis.setAutoRanging(true);
         xAxis.setForceZeroInRange(false);
         LineChart<Number, Number> energyChart = new LineChart<>(xAxis, yAxis);
         energyChart.setMaxHeight(chartHeight);
         energyChart.setMaxHeight(chartWidth);
         energyChart.getData().add(energySeries);
-        energyChart.setAnimated(true);
+        energyChart.setCreateSymbols(false);
+        energyChart.setAnimated(false);
         energyChart.setTitle("Average energy");
         this.getChildren().add(energyChart);
     }
@@ -123,16 +131,17 @@ public class SimulationCharts extends VBox implements IMapChangeObserver {
         childrenSeries.getData().add(new XYChart.Data<>(0, 0));
         NumberAxis xAxis = new NumberAxis();
         xAxis.setLabel("Simulation era");
-        NumberAxis yAxis = new NumberAxis();
+        NumberAxis yAxis = new NumberAxis(0, 5, 1);
         yAxis.setLabel("Number of children");
-        xAxis.setAnimated(true);
+        xAxis.setAnimated(false);
         xAxis.setAutoRanging(true);
         xAxis.setForceZeroInRange(false);
         LineChart<Number, Number> childrenChart = new LineChart<>(xAxis, yAxis);
         childrenChart.setMaxHeight(chartHeight);
         childrenChart.setMaxHeight(chartWidth);
         childrenChart.getData().add(childrenSeries);
-        childrenChart.setAnimated(true);
+        childrenChart.setCreateSymbols(false);
+        childrenChart.setAnimated(false);
         this.getChildren().add(childrenChart);
         childrenChart.setTitle("Average fertility");
     }

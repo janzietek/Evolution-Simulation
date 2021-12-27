@@ -77,9 +77,7 @@ public class SimulationWindow extends BorderPane{
 
             HBox charts = new HBox();
             charts.getChildren().addAll(new SimulationCharts(engine1), new SimulationCharts(engine2));
-
             center.getChildren().add(charts);
-
             this.setCenter(center);
 
             this.simulation1 = new Thread(engine1);

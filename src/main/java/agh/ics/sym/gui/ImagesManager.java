@@ -1,6 +1,5 @@
 package agh.ics.sym.gui;
 
-
 import agh.ics.sym.engine.Animal;
 import agh.ics.sym.engine.IMapElement;
 import agh.ics.sym.engine.MapDirection;
@@ -14,13 +13,11 @@ import java.io.FileNotFoundException;
 
 public class ImagesManager {
 
-    private ImageElement[] images;
-    private double gridSize = 20;
+    private final ImageElement[] images;
 
     public ImagesManager(double gridSize)
     {
-        this.gridSize = gridSize;
-        images = new ImageElement[12];
+        images = new ImageElement[16];
 
         try {
             images[0] = new ImageElement("src/main/resources/jungle.png");
@@ -37,10 +34,15 @@ public class ImagesManager {
             images[9] = new ImageElement("src/main/resources/dog_dir_5.png");
             images[10] = new ImageElement("src/main/resources/dog_dir_6.png");
             images[11] = new ImageElement("src/main/resources/dog_dir_7.png");
+
+            images[12] = new ImageElement("src/main/resources/bar_0.png");
+            images[13] = new ImageElement("src/main/resources/bar_1.png");
+            images[14] = new ImageElement("src/main/resources/bar_2.png");
+            images[15] = new ImageElement("src/main/resources/bar_3.png");
         }
         catch(FileNotFoundException e)
         {
-
+            System.out.println(e);
         }
     }
 
@@ -70,6 +72,35 @@ public class ImagesManager {
                 case WEST -> 10;
                 case NORTHWEST -> 11;
             };
+        }
+
+        ImageView imageView = new ImageView(images[nIndex].image);
+        imageView.setFitWidth(size);
+        imageView.setFitHeight(size);
+
+        return imageView;
+    }
+
+    public ImageView GetBarImageView(IMapElement el, double size, int moveEnergy)
+    {
+        int nIndex = 12; // bush
+
+        if(el.getClass() == Animal.class)
+        {
+            Animal an = (Animal)el;
+
+            if(an.energy > 20 * moveEnergy)
+            {
+                nIndex = 15;
+            }
+            else if(an.energy > 10 * moveEnergy)
+            {
+                nIndex = 14;
+            }
+            else if(an.energy > 5 * moveEnergy)
+            {
+                nIndex = 13;
+            }
         }
 
         ImageView imageView = new ImageView(images[nIndex].image);
