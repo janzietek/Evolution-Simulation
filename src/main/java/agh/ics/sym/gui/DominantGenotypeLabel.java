@@ -14,8 +14,6 @@ public class DominantGenotypeLabel extends Label implements IMapChangeObserver {
 
     @Override
     public void mapChange() {
-        Platform.runLater(() -> {
-            this.setText("Dominant genotype: " + engine.dominantGenotype.toString());
-        });
+        Platform.runLater(() -> this.setText("Dominant genotype: " + engine.dominantGenotype.toString()));
     }
 }

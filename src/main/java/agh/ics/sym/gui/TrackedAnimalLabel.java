@@ -2,7 +2,6 @@ package agh.ics.sym.gui;
 
 import agh.ics.sym.engine.IMapChangeObserver;
 import agh.ics.sym.engine.SimulationEngine;
-import agh.ics.sym.engine.SimulationMap;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 
@@ -17,9 +16,7 @@ public class TrackedAnimalLabel extends Label implements IMapChangeObserver {
     @Override
     public void mapChange() {
         if (engine.getTrackedAnimal() != null){
-            Platform.runLater(() -> {
-                this.setText(engine.trackedInformation());
-            });
+            Platform.runLater(() -> this.setText(engine.trackedInformation()));
         }
     }
 }

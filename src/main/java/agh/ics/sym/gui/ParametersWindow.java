@@ -1,7 +1,6 @@
 package agh.ics.sym.gui;
 
 import agh.ics.sym.engine.SimulationSettings;
-import agh.ics.sym.gui.SimulationApp;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -54,18 +53,28 @@ public class ParametersWindow extends GridPane {
         setConstraints(adamsAndEvesLabel, 0, 6);
         setConstraints(adamsAndEves, 1, 6);
 
+        Label refreshTimeLabel = new Label("Map refresh time: ");
+        TextField mapRefreshTime = new TextField("300");
+        setConstraints(refreshTimeLabel, 0, 7);
+        setConstraints(mapRefreshTime, 1, 7);
+
         Button startButton = new Button("Start simulation");
-        setConstraints(startButton, 0, 8);
+        setConstraints(startButton, 0, 9);
 
         CheckBox magic1 = new CheckBox("Make left map magic");
         CheckBox magic2 = new CheckBox("Make right map magic");
-        setConstraints(magic1, 0, 7);
-        setConstraints(magic2, 1, 7);
+        setConstraints(magic1, 0, 8);
+        setConstraints(magic2, 1, 8);
 
         startButton.setOnAction(e -> {
-            setSettings(mapWidth, mapHeight, mapJungleRatio, animalStartEnergy, animalMoveEnergy, plantEnergy, adamsAndEves);
-            Scene scene = new Scene(new SimulationWindow(this.settings, magic1.isSelected(), magic2.isSelected()));
-            SimulationApp.setScene(scene);
+            try {
+                setSettings(mapWidth, mapHeight, mapJungleRatio, animalStartEnergy, animalMoveEnergy, plantEnergy, adamsAndEves, mapRefreshTime);
+                Scene scene = new Scene(new SimulationWindow(this.settings, magic1.isSelected(), magic2.isSelected()));
+                SimulationApp.setScene(scene);
+                SimulationApp.window.setFullScreen(true);
+            } catch (IllegalArgumentException ex) {
+                System.out.println(ex);
+            }
         });
 
         this.getChildren().addAll(
@@ -83,6 +92,8 @@ public class ParametersWindow extends GridPane {
                 plantEnergy,
                 adamsAndEvesLabel,
                 adamsAndEves,
+                refreshTimeLabel,
+                mapRefreshTime,
                 magic1,
                 magic2,
                 startButton
@@ -95,7 +106,8 @@ public class ParametersWindow extends GridPane {
                                TextField startEnergy,
                                TextField moveEnergy,
                                TextField plantEnergy,
-                               TextField adamsAndEves) {
+                               TextField adamsAndEves,
+                              TextField mapRefreshTime) {
         try {
             int wid = Integer.parseInt(width.getText());
             int hei = Integer.parseInt(height.getText());
@@ -104,8 +116,9 @@ public class ParametersWindow extends GridPane {
             int move = Integer.parseInt(moveEnergy.getText());
             int plant = Integer.parseInt(plantEnergy.getText());
             int aAndE = Integer.parseInt(adamsAndEves.getText());
+            int ref = Integer.parseInt(mapRefreshTime.getText());
 
-            this.settings = new SimulationSettings(wid, hei, rat, start, move, plant, aAndE);
+            this.settings = new SimulationSettings(wid, hei, rat, start, move, plant, aAndE, ref);
         }
         catch (IllegalArgumentException ex) {
             System.out.println(ex);

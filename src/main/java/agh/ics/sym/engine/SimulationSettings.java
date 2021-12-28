@@ -8,11 +8,8 @@ public class SimulationSettings {
     public int plantsEnergy;
     public int animalsStartEnergy;
     public int adamsAndEvesNumber;
+    public int refreshTime;
 
-    public SimulationSettings() throws IllegalArgumentException{
-        this.setMap(10, 10, 0.16);
-        this.setSimulationParameters(2, 30, 50, 10);
-    }
 
     public SimulationSettings(int width,
                               int height,
@@ -20,9 +17,11 @@ public class SimulationSettings {
                               int startEnergy,
                               int moveEnergy,
                               int plantsEnergy,
-                              int aAndE) throws IllegalArgumentException{
+                              int aAndE,
+                              int refreshTime) throws IllegalArgumentException{
         this.setMap(height, width, ratio);
         this.setSimulationParameters(moveEnergy, plantsEnergy, startEnergy, aAndE);
+        this.setRefreshTime(refreshTime);
     }
 
     private void setMap (int height, int width, double jungleRatio) {
@@ -50,5 +49,11 @@ public class SimulationSettings {
         this.animalsStartEnergy = animalsStartEnergy;
         this.moveEnergy = dailyLostEnergy;
         this.plantsEnergy = plantsEnergy;
+    }
+
+    private void setRefreshTime (int mapRefreshTime) {
+        if (mapRefreshTime < 50)
+            throw new IllegalArgumentException("I highly recommend setting refresh time a tiny bit higher");
+        this.refreshTime = mapRefreshTime;
     }
 }

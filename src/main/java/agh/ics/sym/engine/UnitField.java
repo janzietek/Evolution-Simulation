@@ -1,7 +1,5 @@
 package agh.ics.sym.engine;
 
-import com.sun.source.tree.BreakTree;
-
 import java.util.*;
 
 public class UnitField {

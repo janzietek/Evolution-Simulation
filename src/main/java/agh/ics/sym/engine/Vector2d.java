@@ -15,18 +15,16 @@ public class Vector2d implements Comparable<Vector2d> {
         return "(" + x + "," + y + ")";
     }
 
-    boolean precedes(Vector2d other) {
-        if (this.x <= other.x && this.y <= other.y) return true;
-        else return false;
+    public boolean precedes(Vector2d other) {
+        return this.x <= other.x && this.y <= other.y;
     }
 
 
-    boolean follows(Vector2d other) {
-        if (this.x >= other.x && this.y >= other.y) return true;
-        else return false;
+    public boolean follows(Vector2d other) {
+        return this.x >= other.x && this.y >= other.y;
     }
 
-    Vector2d add(Vector2d other) {
+    public Vector2d add(Vector2d other) {
         return new Vector2d(this.x + other.x, this.y + other.y);
     }
 
@@ -54,7 +52,7 @@ public class Vector2d implements Comparable<Vector2d> {
         return Objects.hash(x, y);
     }
 
-    Vector2d opposite () {
+    public Vector2d opposite() {
         return new Vector2d((-1) * this.x, (-1) * this.y);
     }
 

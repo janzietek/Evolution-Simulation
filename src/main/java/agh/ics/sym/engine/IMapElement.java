@@ -2,9 +2,9 @@ package agh.ics.sym.engine;
 
 public interface IMapElement {
 
-    public Vector2d getPosition ();
+    Vector2d getPosition();
 
-    public String toString ();
+    String toString();
 
-    public boolean isAt (Vector2d position);
+    boolean isAt(Vector2d position);
 }

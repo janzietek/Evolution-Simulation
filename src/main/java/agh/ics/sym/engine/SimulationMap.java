@@ -90,7 +90,7 @@ public abstract class SimulationMap implements IPositionChangeObserver{
     public void positionChanged(Animal animal, Vector2d newPosition) {
         this.unitFields.get(animal.getPosition()).animals.remove(animal);
         UnitField unitField = getUnitField(newPosition);
-        this.unitFields.get(newPosition).animals.add(animal);
+        unitField.animals.add(animal);
     }
 
     public boolean isInJungle (Vector2d position) {

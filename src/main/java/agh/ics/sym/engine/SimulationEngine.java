@@ -12,10 +12,10 @@ public class SimulationEngine implements Runnable{
     public final SimulationSettings settings;
     public SimulationStats stats;
     public final SimulationMap map;
-    public int refreshTime;
     public int simulationEra = 0;
 
     public volatile boolean isRunning = false;
+    public boolean simulationEnd = false;
     public GenoType dominantGenotype;
     File statsFile;
 
@@ -52,7 +52,6 @@ public class SimulationEngine implements Runnable{
             }
         }
         this.stats = new SimulationStats(settings);
-        this.refreshTime = 400;
 
         placeAdamsAndEves();
         updateDominantGenotype();
@@ -61,10 +60,10 @@ public class SimulationEngine implements Runnable{
 
     @Override
     public void run() {
-        while (!simulationEnd()) {
+        while (!simulationEnd) {
             if (isRunning()) {
                 try {
-                    Thread.sleep(refreshTime);
+                    Thread.sleep(settings.refreshTime);
                     this.singleEra();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -73,6 +72,7 @@ public class SimulationEngine implements Runnable{
                 {
                     observer.mapChange();
                 }
+                setSimulationEnd();
             }
         }
     }
@@ -93,10 +93,6 @@ public class SimulationEngine implements Runnable{
 
     public void addObserver (IMapChangeObserver observer) {
         this.observers.add(observer);
-    }
-
-    public void removeObserver (IMapChangeObserver observer) {
-        this.observers.remove(observer);
     }
 
     public synchronized void changeSimulationStatus () {
@@ -120,12 +116,12 @@ public class SimulationEngine implements Runnable{
     }
 
 
-    public boolean simulationEnd () {
+    public void setSimulationEnd() {
         if (animals.size() == 0 && simulationEra > 0) {
             changeSimulationStatus();
-            return true;
+            this.simulationEnd = true;
         }
-        return false;
+        this.simulationEnd = false;
     }
 
     private void placeAdamsAndEves() {
@@ -263,6 +259,7 @@ public class SimulationEngine implements Runnable{
         if (unitField.animals.size() > 0) {
             this.trackedAnimal = unitField.getTheStrongest().get(0);
             this.trackedAnimalDescendants.clear();
+            this.trackedAnimalChildren.clear();
             return true;
         }
         return false;

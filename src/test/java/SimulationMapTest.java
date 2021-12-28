@@ -1,6 +1,4 @@
-import agh.ics.sym.engine.SimulationMap;
-import agh.ics.sym.engine.SimulationMapBounded;
-import agh.ics.sym.engine.Vector2d;
+import agh.ics.sym.engine.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,10 +1,8 @@
 package agh.ics.sym.gui;
 
 import agh.ics.sym.engine.*;
-import javafx.application.Platform;
-import javafx.geometry.HPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
 
@@ -81,11 +79,32 @@ public class SimulationWindow extends BorderPane{
             right.getChildren().addAll(pauseStartButton2, map2, dominant2, trackedAnimal2);
             this.setRight(right);
 
+
             VBox center = new VBox();
+
+            HBox buttons = new HBox();
+
+            Button exitButton = new Button("Click her to exit application");
+            exitButton.setOnAction(e -> {
+                this.engine1.simulationEnd = true;
+                this.engine2.simulationEnd = true;
+                SimulationApp.window.close();
+                System.exit(0);
+            });
+
+            Button resetButton = new Button("Click her to return to parameters");
+            resetButton.setOnAction(e -> {
+                this.engine1.simulationEnd = true;
+                this.engine2.simulationEnd = true;
+                Scene scene = new Scene(new ParametersWindow());
+                SimulationApp.setScene(scene);
+            });
+
+            buttons.getChildren().addAll(exitButton, resetButton);
 
             HBox charts = new HBox();
             charts.getChildren().addAll(new SimulationCharts(engine1), new SimulationCharts(engine2));
-            center.getChildren().add(charts);
+            center.getChildren().addAll(buttons, charts);
             this.setCenter(center);
 
             this.simulation1 = new Thread(engine1);

@@ -1,10 +1,6 @@
 .idea
 .gradle
 build
-gradle
-gradlew
-gradlew.bat
-settings.gradle
 boundedSimulationStats.csv
 wrappedSimulationStats.csv
 

@@ -2,20 +2,12 @@ package agh.ics.sym.gui;
 
 
 import agh.ics.sym.engine.*;
-import com.sun.javafx.geom.Rectangle;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-
-import java.io.FileNotFoundException;
 
 public class MapVisualizer extends GridPane implements IMapChangeObserver {
     final int gridSize;
@@ -28,7 +20,7 @@ public class MapVisualizer extends GridPane implements IMapChangeObserver {
         this.engine = engine;
         this.map = engine.map;
         this.trackedAnimalLabel = trackedAnimal;
-        this.gridSize = (int) 600 / Integer.max(map.savannaWidth, map.savannaHeight);
+        this.gridSize = 600 / Integer.max(map.savannaWidth, map.savannaHeight);
         for (int i = 0; i < map.savannaHeight; i++) {
             this.getRowConstraints().add(new RowConstraints(gridSize));
         }
@@ -38,14 +30,11 @@ public class MapVisualizer extends GridPane implements IMapChangeObserver {
 
         imagesManager = new ImagesManager(gridSize);
 
-        EventHandler<MouseEvent> eventHandler = new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                double gridX = (int)(e.getX() / gridSize);
-                double gridY = (int)(e.getY() / gridSize);
-                if (engine.setTrackedAnimal(new Vector2d((int)gridX, map.savannaUpperRight.y - (int)gridY))) {
-                    trackedAnimalLabel.mapChange();
-                }
+        EventHandler<MouseEvent> eventHandler = e -> {
+            double gridX = (int)(e.getX() / gridSize);
+            double gridY = (int)(e.getY() / gridSize);
+            if (engine.setTrackedAnimal(new Vector2d((int)gridX, map.savannaUpperRight.y - (int)gridY))) {
+                trackedAnimalLabel.mapChange();
             }
         };
         addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);

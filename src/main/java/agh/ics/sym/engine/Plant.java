@@ -17,7 +17,6 @@ public class Plant implements IMapElement{
     }
 
     public boolean isAt (Vector2d position) {
-        if (position.equals(this.position)) return true;
-        else return false;
+        return position.equals(this.position);
     }
 }

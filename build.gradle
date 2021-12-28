@@ -29,5 +29,5 @@ test {
 }
 
 application {
-    mainClassName("agh.ics.sym.gui.SimulationApp")
+    mainClassName = "agh.ics.sym.gui.SimulationApp"
 }
