@@ -1,5 +1,8 @@
 package agh.ics.sym.engine;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,11 +12,16 @@ public class SimulationEngine implements Runnable{
     public final SimulationSettings settings;
     public SimulationStats stats;
     public final SimulationMap map;
-    public volatile boolean isRunning = false;
     public int refreshTime;
     public int simulationEra = 0;
-    public GenoType dominantGenotype;
 
+    public volatile boolean isRunning = false;
+    public GenoType dominantGenotype;
+    File statsFile;
+
+    private Animal trackedAnimal = null;
+    private final LinkedList<Animal> trackedAnimalChildren = new LinkedList<>();
+    private final LinkedList<Animal> trackedAnimalDescendants = new LinkedList<>();
 
     public final LinkedList<Animal> animals = new LinkedList<>();
     public final LinkedList<Plant> plants = new LinkedList<>();
@@ -21,15 +29,31 @@ public class SimulationEngine implements Runnable{
     public final LinkedList<IMapChangeObserver> observers = new LinkedList<>();
     public final Map<GenoType,ArrayList<Animal>> genotypes = new HashMap<>();
 
+
+
     public SimulationEngine(SimulationSettings settings, boolean isBounded) {
         this.settings = settings;
-        if (isBounded)
+        if (isBounded) {
             this.map = new SimulationMapBounded(settings.mapWidth, settings.mapHeight, settings.jungleRatio);
-        else
+            try {
+                Files.deleteIfExists(Paths.get("boundedSimulationStats.csv"));
+                this.statsFile = new File("boundedSimulationStats.csv");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
             this.map = new SimulationMapWrapped(settings.mapWidth, settings.mapHeight, settings.jungleRatio);
-
+            try {
+                Files.deleteIfExists(Paths.get("wrappedSimulationStats.csv"));
+                this.statsFile = new File("wrappedSimulationStats.csv");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         this.stats = new SimulationStats(settings);
-        this.refreshTime = 200;
+        this.refreshTime = 400;
+
         placeAdamsAndEves();
         updateDominantGenotype();
     }
@@ -53,6 +77,19 @@ public class SimulationEngine implements Runnable{
         }
     }
 
+    private void saveStatsToFile () {
+        try {
+            FileWriter fw = new FileWriter(statsFile.getName(), true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            PrintWriter pw = new PrintWriter(bw);
+
+            pw.println(stats.toString());
+            pw.flush();
+            pw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void addObserver (IMapChangeObserver observer) {
         this.observers.add(observer);
@@ -71,6 +108,7 @@ public class SimulationEngine implements Runnable{
     }
 
     public void singleEra() {
+        saveStatsToFile();
         stats.updatePlants(plants.size());
         removeDeadAnimals();
         moveAnimals();
@@ -96,7 +134,7 @@ public class SimulationEngine implements Runnable{
             Vector2d position = Vector2d.getRandomVector(map.savannaLowerLeft, map.savannaUpperRight);
             if (!this.map.areAnimalsAt(position)) {
                 Animal animal;
-                animal = new Animal(this.map, position, this.settings.animalsStartEnergy);
+                animal = new Animal(this.map, position, this.settings.animalsStartEnergy, this.simulationEra);
                 animals.add(animal);
                 this.map.placeAnimal(animal);
                 addAnimalsGenes(animal);
@@ -165,6 +203,13 @@ public class SimulationEngine implements Runnable{
                     this.animals.add(child);
                     addAnimalsGenes(child);
                     stats.updateCausedByBirth();
+                    if (mates.get(0).equals(trackedAnimal) || mates.get(1).equals(trackedAnimal)) {
+                        this.trackedAnimalDescendants.add(child);
+                        this.trackedAnimalChildren.add(child);
+                    }
+                    if (trackedAnimalDescendants.contains(mates.get(0)) || trackedAnimalDescendants.contains(mates.get(1))) {
+                        this.trackedAnimalDescendants.add(child);
+                    }
                 }
             }
         }
@@ -209,5 +254,36 @@ public class SimulationEngine implements Runnable{
             }
         }
         this.dominantGenotype = dominant;
+    }
+
+
+    public boolean setTrackedAnimal (Vector2d position) {
+        UnitField unitField = this.map.getUnitField(position);
+        System.out.println(unitField.toString());
+        if (unitField.animals.size() > 0) {
+            this.trackedAnimal = unitField.getTheStrongest().get(0);
+            this.trackedAnimalDescendants.clear();
+            return true;
+        }
+        return false;
+    }
+
+    public Animal getTrackedAnimal () {
+        return this.trackedAnimal;
+    }
+
+
+    public String trackedInformation() {
+        if (trackedAnimal.energy > 0) {
+            return "Tracked animal genotype: " + trackedAnimal.getGenoType().toString() + "\n"
+                    + "Number of children: " + trackedAnimalChildren.size() + "\n"
+                    + "Number of descendants: " + trackedAnimalDescendants.size();
+        }
+        else {
+            return "Tracked animal genotype: " + trackedAnimal.getGenoType().toString() + "\n"
+                    + "Number of children: " + trackedAnimalChildren.size() + "\n"
+                    + "Number of descendants: " + trackedAnimalDescendants.size() + "\n"
+                    + "Regretfully, this animal died in " + (trackedAnimal.birthDate + trackedAnimal.age) + " era of simulation";
+        }
     }
 }

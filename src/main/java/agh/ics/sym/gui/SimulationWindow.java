@@ -19,6 +19,8 @@ public class SimulationWindow extends BorderPane{
     Button pauseStartButton2;
     DominantGenotypeLabel dominant1;
     DominantGenotypeLabel dominant2;
+    TrackedAnimalLabel trackedAnimal1;
+    TrackedAnimalLabel trackedAnimal2;
 
 
     public SimulationWindow (SimulationSettings settings, boolean magic1, boolean magic2) {
@@ -32,8 +34,12 @@ public class SimulationWindow extends BorderPane{
             else
                 this.engine2 = new SimulationEngine(settings, true);
 
-            this.map1 = new MapVisualizer(engine1);
-            this.map2 = new MapVisualizer(engine2);
+            this.trackedAnimal1 = new TrackedAnimalLabel(engine1);
+            this.trackedAnimal2 = new TrackedAnimalLabel(engine2);
+
+            this.map1 = new MapVisualizer(engine1, trackedAnimal1);
+            this.map2 = new MapVisualizer(engine2, trackedAnimal2);
+
             this.dominant1 = new DominantGenotypeLabel(engine1);
             this.dominant2 = new DominantGenotypeLabel(engine2);
 
@@ -41,6 +47,8 @@ public class SimulationWindow extends BorderPane{
             engine2.addObserver(map2);
             engine1.addObserver(dominant1);
             engine2.addObserver(dominant2);
+            engine1.addObserver(trackedAnimal1);
+            engine2.addObserver(trackedAnimal2);
 
             this.pauseStartButton1 = new Button("Click to start simulation");
             this.pauseStartButton2 = new Button("Click to start simulation");
@@ -66,11 +74,11 @@ public class SimulationWindow extends BorderPane{
             });
 
             VBox left = new VBox();
-            left.getChildren().addAll(pauseStartButton1, map1, dominant1);
+            left.getChildren().addAll(pauseStartButton1, map1, dominant1, trackedAnimal1);
             this.setLeft(left);
 
             VBox right = new VBox();
-            right.getChildren().addAll(pauseStartButton2, map2, dominant2);
+            right.getChildren().addAll(pauseStartButton2, map2, dominant2, trackedAnimal2);
             this.setRight(right);
 
             VBox center = new VBox();

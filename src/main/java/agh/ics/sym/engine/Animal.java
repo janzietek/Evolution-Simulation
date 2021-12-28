@@ -3,30 +3,36 @@ package agh.ics.sym.engine;
 import java.lang.Math;
 import java.util.LinkedList;
 
-public class Animal implements IMapElement, Comparable<Animal>{
+public class Animal implements IMapElement {
     private final GenoType genoType;
     public final int startEnergy;
 
     private MapDirection orientation;
     public int energy;
+    public int birthDate;
     public int age = 0;
     private Vector2d position;
     private final SimulationMap map;
-    public Animal parent;
+    public Animal father;
+    public Animal mother;
     public LinkedList<Animal> children = new LinkedList<>();
 
     // constructor for magically created animals
-    public Animal (SimulationMap map, Vector2d initialPosition, int startEnergy) {
+    public Animal (SimulationMap map, Vector2d initialPosition, int startEnergy, int birthDate) {
+        this.birthDate = birthDate;
         this.position = initialPosition;
         this.map = map;
         this.orientation = MapDirection.getRandomDirection();
         this.genoType = new GenoType();
         this.startEnergy = startEnergy;
         this.energy = startEnergy;
+        this.father = null;
+        this.mother = null;
     }
 
     // constructor for traditionally created animals, assuming father.energy >= mother.energy
     public Animal (Animal father, Animal mother) {
+        this.birthDate = father.birthDate + father.age;
         this.position = father.position;
         this.map = father.map;
         this.orientation = MapDirection.getRandomDirection();
@@ -34,10 +40,13 @@ public class Animal implements IMapElement, Comparable<Animal>{
         this.genoType = new GenoType(father.getGenoType(), mother.getGenoType(), energyRatio);
         this.startEnergy = copulatingEnergy(father, mother);
         this.energy = this.startEnergy;
+        this.father = father;
+        this.mother = mother;
     }
 
     // constructor for magic copies
     public Animal (Animal original, Vector2d position) {
+        this.birthDate = original.birthDate + original.age;
         this.position = position;
         this.orientation = MapDirection.getRandomDirection();
         this.startEnergy = original.startEnergy;
@@ -136,14 +145,4 @@ public class Animal implements IMapElement, Comparable<Animal>{
         return position.equals(this.position);
     }
 
-
-    public String toString() {
-        return this.orientation.toString() + this.energy;
-    }
-
-
-    @Override
-    public int compareTo(Animal A) {
-        return A.energy - this.energy;
-    }
 }

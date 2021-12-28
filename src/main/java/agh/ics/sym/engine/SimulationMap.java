@@ -153,4 +153,5 @@ public abstract class SimulationMap implements IPositionChangeObserver{
         }
         return freePositions;
     }
+
 }

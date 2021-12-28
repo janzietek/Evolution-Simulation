@@ -22,10 +22,12 @@ public class MapVisualizer extends GridPane implements IMapChangeObserver {
     SimulationMap map;
     SimulationEngine engine;
     ImagesManager imagesManager;
+    TrackedAnimalLabel trackedAnimalLabel;
 
-    public MapVisualizer (SimulationEngine engine) {
+    public MapVisualizer (SimulationEngine engine, TrackedAnimalLabel trackedAnimal) {
         this.engine = engine;
         this.map = engine.map;
+        this.trackedAnimalLabel = trackedAnimal;
         this.gridSize = (int) 600 / Integer.max(map.savannaWidth, map.savannaHeight);
         for (int i = 0; i < map.savannaHeight; i++) {
             this.getRowConstraints().add(new RowConstraints(gridSize));
@@ -41,8 +43,9 @@ public class MapVisualizer extends GridPane implements IMapChangeObserver {
             public void handle(MouseEvent e) {
                 double gridX = (int)(e.getX() / gridSize);
                 double gridY = (int)(e.getY() / gridSize);
-
-                System.out.println("Mouse X = " + gridX + "  Y = " + gridY);
+                if (engine.setTrackedAnimal(new Vector2d((int)gridX, map.savannaUpperRight.y - (int)gridY))) {
+                    trackedAnimalLabel.mapChange();
+                }
             }
         };
         addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);

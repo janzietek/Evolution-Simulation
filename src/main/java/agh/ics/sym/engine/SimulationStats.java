@@ -69,13 +69,11 @@ public class SimulationStats {
 
     @Override
     public String toString() {
-        return "SimulationStats{" +
-                "plantsNumber=" + plantsNumber +
-                ", animalsNumber=" + animalsNumber +
-                ", deadAnimalsNumber=" + deadAnimalsNumber +
-                ", totalEnergy=" + totalEnergy +
-                ", totalDeadAge=" + totalDeadAge +
-                ", totalChildren=" + totalChildren +
-                '}';
+        return plantsNumber +
+                ", " + animalsNumber +
+                "," + deadAnimalsNumber +
+                ", " + getAverageEnergy() +
+                ", " + getAverageLifespan() +
+                ", " + getAverageFertility();
     }
 }
